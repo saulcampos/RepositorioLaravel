@@ -1,0 +1,33 @@
+body{
+	background: url(../imagenes/fondo.jpg);
+	
+	background-repeat:repeat-x; /*decimos que no se repita la */
+	background-attachment:fixed;
+	
+}
+
+input, textarea {
+	margin-bottom: 15px;
+	
+	padding: 5px;/*Es deja un espaciado interno para que el formulario se vea mas como un formulario ajajajaj entre las textbox*/
+}	
+
+#formulario {
+	background: #ffffaa;
+	position:absolute;
+	top:100px;
+	left:520px;
+    border: 5px solid white;
+	color: #000;/* COLOR DEL TEXTO*/
+	height:400px;
+	width: 300PX;/*Es como un tipo cuadro de texto, osea el remarcado dr color al texto le damos dimeciones y eltexto se amoda a el anchos*/
+    }
+
+ #user{
+		width:110px;
+		height:auto;
+	   }
+
+#header{
+	font-size: 32px
+}

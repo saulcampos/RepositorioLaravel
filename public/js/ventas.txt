@@ -1,0 +1,122 @@
+function init()
+{
+	var urlClientes='http://localhost/blog1/public/apiClientes';
+	var urlArticulos='http://localhost/blog1/public/apiArticulos';
+new Vue({
+	http:{
+		headers:{
+			'X-CSRF-TOKEN':document.querySelector('#token').getAttribute('value')
+		}
+	},
+	el:'#apiventas',//La ide donde ba a trabaj todo el Js
+
+	created:function()//Al momento de cargar la vista se cargan de inmediato estos 2
+	{
+		this.getClientes();
+		
+	},
+	data:{
+		//SON MATRISES
+		clientes:[], // para obtener la tabla de clientes
+		articulos:[],// 	tabla de productos
+		ventas:[],  //	 detalle de ventas
+		opciones:[],
+
+		// Son CAMPOS O vARIBLES
+		id_cliente:'', // Obtiene la clave del cliente seleccionado
+		id_artc:'',    // Se usa para obtener la clave del producto introducido en el input, para búsqueda
+		nombre:'Gilberto',
+		pagar:null,  // Se usa para saber la cantidad que usará el cliente para pagar
+		cambio:null // Se usa para calcular el cambio
+
+
+
+
+
+	},
+
+	methods:{
+		// Obtiene la lista de clientes de la BD
+		getClientes:function(){
+			  this.$http.get(urlClientes).then
+			  (function(response){
+			    	console.log(response);
+				    this.clientes=response.data;
+			});
+		},
+		// Obtiene la lista de productos de la BD
+		getArticulos:function(id){
+			
+			if(this.id_artc)
+			{
+				this.$http.get(urlArticulos + '/' + id).then//Al la url "Le suma la id que enviamos"
+				(
+					function(response){
+						console.log(response);
+						this.articulos=response.data;// Gurrda todo en el array de articulos
+//En un array guardo todo lo que venga de la respuesta del servidor
+/**/						var unaVenta={
+									'idarticulo':response.data.idarticulo,
+									'nombre':response.data.nombre,
+									'descripcion':response.data.descripcion,									
+									'cantidad':1,
+									'precio':response.data.precio,
+									'total':response.data.precio}					      
+						this.ventas.push(unaVenta);
+						console.log(unaVenta);
+
+					});
+				this.id_artc='';
+			}
+		},
+
+		eliminarVenta:function(id){
+			this.ventas.splice(id,1);
+
+		},
+
+		masProductos:function(id){
+			this.ventas[id].cantidad++;
+			if (this.ventas.length){
+				this.ventas[id].total=this.ventas[id].cantidad * this.ventas[id].precio;
+			}
+
+		},
+
+		menosProductos:function(id){
+			if (this.ventas[id].cantidad>1){
+				this.ventas[id].cantidad--;
+				if (this.ventas.length){
+				this.ventas[id].total=this.ventas[id].cantidad * this.ventas[id].precio;
+			}
+			}
+		}
+
+
+
+	},
+
+	computed:{
+		granTotal:function(){
+			var acum=0;
+			for (var i = this.ventas.length - 1; i >= 0; i--) {
+				acum=acum + parseFloat(this.ventas[i].total);
+				//alert(this.ventas[i].total);
+			}
+			return acum;
+		},
+
+		aPagar:function(){
+
+				return (this.pagar - this.granTotal);
+
+		}
+
+
+	}
+
+
+});
+}
+window.onload=init;
+Vue.config.devtools = true;
